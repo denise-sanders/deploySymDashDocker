@@ -1,0 +1,6 @@
+- name: data container
+  docker:
+    name: symdash_app
+    image: symdash_img
+    state: present
+ 

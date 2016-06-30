@@ -15,22 +15,11 @@
   run_once: true
   changed_when: False
 
-- name: Push out symdash code
-  unarchive: src={{ cache_dir }}/symdash.tgz
-             dest='{{ deploy_home }}'
-             copy=yes
+# DONE INSIDE DOCKER ########################
+# Call docker or something
+- name: symdash app
+  docker:
+    name: symdash app
+    image: someuser/serviceimage
+    state: restarted
 
-- pip: requirements="{{deploy_home}}/requirements.txt"
-
-- name: Push out config.py file
-  copy: src={{config_file}} dest="{{deploy_home}}/config.py"
-
-# Kill old instances of app, if somehow running
-- name: grab pid of app process
-  command: ps 
-  register: process_id
-  changed_when: False
-
-- name: kill app if it is already running
-  command: pkill run.py
-  when: process_id.stdout.find("run.py") != -1 
