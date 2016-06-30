@@ -1,0 +1,36 @@
+- name: create symdash directory
+  file: path="{{deploy_home}}" state=directory
+
+- name: Get the symdash repo from github
+  git: dest={{ cache_dir }}/symdash force=yes
+       repo={{ git_repo }} accept_hostkey=True  
+  delegate_to: localhost
+  run_once: true
+
+- name: Create deploy tarball
+  shell: "git archive master --format=tgz --output=../symdash.tgz"
+  args:
+    chdir: "{{ cache_dir }}/symdash"
+  delegate_to: localhost
+  run_once: true
+  changed_when: False
+
+- name: Push out symdash code
+  unarchive: src={{ cache_dir }}/symdash.tgz
+             dest='{{ deploy_home }}'
+             copy=yes
+
+- pip: requirements="{{deploy_home}}/requirements.txt"
+
+- name: Push out config.py file
+  copy: src={{config_file}} dest="{{deploy_home}}/config.py"
+
+# Kill old instances of app, if somehow running
+- name: grab pid of app process
+  command: ps 
+  register: process_id
+  changed_when: False
+
+- name: kill app if it is already running
+  command: pkill run.py
+  when: process_id.stdout.find("run.py") != -1 

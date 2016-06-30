@@ -1,0 +1,59 @@
+- name: Make sure apt-get is up to date
+  apt: update_cache=yes
+
+# Requires reboot of server
+- name: Upgrade Packages
+  apt: upgrade=dist
+
+- name: restart machine
+  shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+  async: 1
+  poll: 0
+  sudo: true
+  ignore_errors: true
+
+- name: waiting for server to come back
+  local_action:
+    module: wait_for
+      host={{ inventory_hostname }}
+      port=22
+      state=started
+      delay=30
+      timeout=300
+  sudo: false
+
+- user: name=postgres shell=/bin/bash groups=sudo append=yes
+
+# To get 9.5 version of postgresql
+- name: create file for postgres repo
+  file: path="/etc/apt/sources.list.d/postgresql.list" state=touch
+  changed_when: False
+
+- name: add postgres repo to file
+  lineinfile: line="deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main 9.5" dest="/etc/apt/sources.list.d/postgresql.list" state=present
+
+- name: Get apt-key for psql version 9.5
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+
+- apt: update_cache=yes
+
+- apt: name={{item}} state=present
+  with_items:
+    - postgresql-client-9.5
+    - postgresql-common
+    - postgresql-9.5
+    - vim
+    - python
+    - python-dev
+    - libpq-dev
+    - gcc
+    - npm
+    - python-setuptools
+
+- apt: upgrade=dist
+
+- name: install pip
+  easy_install: name=pip 
+
+# Installed for run.py supervisor script
+- pip: name=supervisor

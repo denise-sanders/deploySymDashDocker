@@ -1,0 +1,8 @@
+---
+# vars file for symdash
+cache_dir: cache
+git_repo: git@github.rackspace.com:symetric/symdash.git 
+deploy_home: /etc/symdash
+config_file: config.py
+
+

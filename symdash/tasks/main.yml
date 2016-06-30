@@ -1,0 +1,21 @@
+---
+
+- include: packages.yml
+
+- include: postgresql.yml
+
+- include: redis.yml
+
+- include: deploy_symdash.yml
+
+- include: cron.yml
+
+- name: push supervisord script to remote
+  copy: src=supervisord.conf dest=/etc/supervisord.conf
+
+- name: start supervisord
+  command: "supervisord -c /etc/supervisord.conf"
+
+- name: start symdash app
+  supervisorctl: name=symdash_app state=started  
+  ignore_errors: yes 
