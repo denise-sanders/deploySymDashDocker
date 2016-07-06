@@ -5,4 +5,10 @@ git_repo: git@github.rackspace.com:symetric/symdash.git
 deploy_home: /etc/symdash
 config_file: config.py
 
+# Variables for postgres database
+db_name: maas_rollups
+db_user: post
+db_user_password: snekysnek
+db_password: snekysnek
+
 

@@ -1,4 +1,9 @@
-- hosts: erebor
+- hosts: postgres_server
+  gather_facts: false
+  roles:
+    - postgres
+
+- hosts: symdash_server
   gather_facts: false
   roles:
     - symdash 

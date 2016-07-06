@@ -37,6 +37,16 @@
 
 - apt: update_cache=yes
 
+- apt: name={{item}} update_cache=true state=latest
+  with_items:
+    - bash
+    - openssl
+    - libssl-dev
+    - libssl-doc
+  tags: packages  
+
+- apt: name=python-pip state=absent
+
 - apt: name={{item}} state=present
   with_items:
     - postgresql-client-9.5
@@ -49,11 +59,23 @@
     - gcc
     - npm
     - python-setuptools
+    - python-psycopg2
 
 - apt: upgrade=dist
 
-- name: install pip
-  easy_install: name=pip 
+- easy_install: name=supervisor state=latest
+- easy_install: name=pip state=latest
+- pip: name=docker-py
 
-# Installed for run.py supervisor script
-- pip: name=supervisor
+# Install Docker
+- name: install docker
+  shell: curl -sSL https://get.docker.com/ | sh
+  args:
+     creates: /usr/bin/docker
+
+- name: Wait for the Docker server to start
+  action: raw docker version
+  register: docker_version
+  until: docker_version.stdout.find("Client") != -1
+  retries: 30
+  delay: 10

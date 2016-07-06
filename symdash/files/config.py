@@ -35,4 +35,3 @@ class DevelopmentConfig(src.base_config.Config):
             'password': 'omitted'
         }
     }
-

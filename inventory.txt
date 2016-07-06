@@ -1,2 +1,5 @@
-[erebor]
+[postgres_server]
+#23.253.218.74
+
+[symdash_server]
 23.253.218.74

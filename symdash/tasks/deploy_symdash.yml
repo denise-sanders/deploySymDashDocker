@@ -15,11 +15,4 @@
   run_once: true
   changed_when: False
 
-# DONE INSIDE DOCKER ########################
-# Call docker or something
-- name: symdash app
-  docker:
-    name: symdash app
-    image: someuser/serviceimage
-    state: restarted
 
