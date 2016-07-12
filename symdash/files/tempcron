@@ -1,0 +1,6 @@
+0 */6 * * * /usr/bin/python /etc/symdash/run.py refresh_metric_metadata >/dev/null 2>/dev/null
+5 */6 * * * /usr/bin/python /etc/symdash/run.py refresh_cells_by_region >/dev/null 2>/dev/null
+5 */6 * * * /usr/bin/python /etc/symdash/run.py refresh_regions >/dev/null 2>/dev/null
+5 */6 * * * /usr/bin/python /etc/symdash/run.py refresh_cell_metric_data >/dev/null 2>/dev/null
+5 */6 * * * /usr/bin/python /etc/symdash/run.py database_cleanup >/dev/null 2>/dev/null
+

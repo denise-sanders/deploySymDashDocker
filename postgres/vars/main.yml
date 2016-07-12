@@ -1,0 +1,5 @@
+---
+# vars file for postgres
+postgresql_path: /usr/lib/postgresql/9.5/bin
+
+# Include database user, if we want to use something oteher than postgres

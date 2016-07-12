@@ -1,0 +1,15 @@
+---
+
+# Stays the same
+- include: packages.yml
+
+- include: postgresql.yml
+
+- include: redis.yml
+
+- include: deploy_symdash.yml
+
+# Ignoring this for now because Frito said it might go away 
+#- include: cron.yml
+
+- include: docker.yml

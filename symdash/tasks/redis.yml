@@ -1,0 +1,53 @@
+# copied from symnode-ansible redis.yml
+- name: download latest stable redis
+  get_url: url=http://download.redis.io/redis-stable.tar.gz dest=/tmp/redis-stable.tar.gz
+
+- name: untar redis
+  command: tar zxf /tmp/redis-stable.tar.gz -C /tmp
+
+- name: build redis
+  command: make -C /tmp/redis-stable
+
+- name: install redis
+  command: make install -C /tmp/redis-stable
+
+- name: create redis group
+  group: name=redis state=present system=yes
+
+- name: create redis user
+  user: name=redis group=redis createhome=no shell=/bin/false system=yes state=present
+
+- name: make sure redis.log file exists
+  file: path=/var/log/redis.log state=touch owner=redis group=redis mode=0644
+  changed_when: False
+
+- name: make sure that /etc/redis exists
+  file: path=/etc/redis state=directory mode=0755
+
+- name: make sure that /var/db/redis exists
+  file: path=/var/db/redis state=directory mode=0755 group=redis owner=redis
+
+- name: copy redis.conf file
+  copy: src=redis.conf dest=/etc/redis/redis.conf group=redis owner=redis
+
+- name: copy init file
+  copy: src=redis_init dest=/etc/init.d/redis mode="u+x"
+
+- name: update init file
+  command: update-rc.d -f redis defaults
+  changed_when: False
+
+- name: ensure redis service is restarted
+  service: name=redis state=restarted
+  changed_when: False
+
+# not from symnode-ansibel
+- name: check environment_variables
+  command: cat /etc/environment
+  register: environment_variables
+  changed_when: False
+
+- shell: echo 'REDIS_HOME="/etc/redis"' >> /etc/environment
+  when: environment_variables.stdout.find("REDIS_HOME") == -1
+
+- file: path=/etc/redis/redis-3.0.6.tar.gz state=absent

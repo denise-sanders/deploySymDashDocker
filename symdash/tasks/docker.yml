@@ -1,0 +1,7 @@
+- name: data container
+  docker:
+    name: symdash_app
+    image: deni0109/symdocker
+    state: running
+    stdin_open: yes
+    tty: yes 

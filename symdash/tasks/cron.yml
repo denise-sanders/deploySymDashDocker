@@ -1,0 +1,12 @@
+- name: push chron file to system
+  copy: src=tempcron dest=/tmp/tempcron mode=0755
+
+- name: import file into CRON
+  command: crontab /tmp/tempcron
+
+- name: remove chron file from remote
+  file: path=/tmp/tempcron state=absent
+
+- name: start crond
+  service: name=cron state=restarted
+

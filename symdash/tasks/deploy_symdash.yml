@@ -1,0 +1,18 @@
+- name: create symdash directory
+  file: path="{{deploy_home}}" state=directory
+
+- name: Get the symdash repo from github
+  git: dest={{ cache_dir }}/symdash force=yes
+       repo={{ git_repo }} accept_hostkey=True  
+  delegate_to: localhost
+  run_once: true
+
+- name: Create deploy tarball
+  shell: "git archive master --format=tgz --output=../symdash.tgz"
+  args:
+    chdir: "{{ cache_dir }}/symdash"
+  delegate_to: localhost
+  run_once: true
+  changed_when: False
+
+
